@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global safety net (Default-deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Check if the user has an admin role
+    function isAdmin() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Check if the user has a sub-admin role
+    function isSubAdmin() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'sub-admin';
+    }
+
+    // User Collection Rules
+    match /users/{userId} {
+      
+      // Allow reading user profiles if logged in and reading own profile or if the requester is an admin or sub-admin
+      allow read: if request.auth != null && (
+        request.auth.uid == userId || 
+        isAdmin() || 
+        isSubAdmin()
+      );
+
+      // Allow registration profile creation
+      allow create: if request.auth != null && (
+        // Case 1: User creating their own profile during registration
+        (request.auth.uid == userId &&
+         request.resource.data.uid == userId &&
+         (request.auth.token.get('email', '') == '' || request.resource.data.email == request.auth.token.email) &&
+         (
+           // Bootstrapped Primary Admin auto-approved
+           (request.resource.data.email == 'mdmuinali2006@gmail.com' && 
+            request.resource.data.role == 'admin' && 
+            request.resource.data.status == 'approved') 
+           || 
+           // Standard register default values
+           (request.resource.data.role == 'user' && 
+            request.resource.data.status == 'pending')
+         )
+        ) ||
+        // Case 2: Admin or Sub-Admin creating a user profile
+        isAdmin() || 
+        isSubAdmin()
+      );
+
+      // Update operations partitioned by privilege tier
+      allow update: if request.auth != null && (
+        // Tier 1: Super Admin can update any field (change role, status, etc.)
+        isAdmin() || 
+        
+        // Tier 2: Sub-Admins can approve or reject users by modifying ONLY the 'status' field
+        (isSubAdmin() && 
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])) ||
+         
+        // Tier 3: Standard user can modify their own details (e.g. name), but NOT status or role
+        (request.auth.uid == userId && 
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'status']))
+      );
+
+      // Allow deletion strictly for admin or sub-admin
+      allow delete: if isAdmin() || isSubAdmin();
+    }
+
+    // Helper for validating ticker document shape
+    function isValidTicker(data) {
+      return data.keys().hasAll(['text', 'enabled', 'updatedAt', 'updatedBy']) &&
+        data.keys().size() == 4 &&
+        data.text is string &&
+        data.text.size() <= 1000 &&
+        data.enabled is bool &&
+        data.updatedBy is string &&
+        data.updatedBy == request.auth.uid;
+    }
+
+    // Settings Collection Rules (for Ticker configurations, etc.)
+    match /settings/{settingId} {
+      allow read: if request.auth != null;
+      
+      allow create, update: if (isAdmin() || isSubAdmin()) && 
+        isValidTicker(request.resource.data) &&
+        request.resource.data.updatedAt == request.time;
+        
+      allow delete: if isAdmin() || isSubAdmin();
+    }
+
+    // User Offers Collection Rules (Per-user landing page overrides)
+    match /user_offers/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+        docId.split('_')[0] == request.auth.uid;
+    }
+  }
+}
