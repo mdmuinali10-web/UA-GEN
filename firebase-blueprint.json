@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account registration with approval status and privilege role",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Unique Identifier matching Firebase Auth UID"
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name"
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "rejected"],
+          "description": "Registration approval state"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "admin", "sub-admin"],
+          "description": "Access privilege tier"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of account creation"
+        }
+      },
+      "required": ["uid", "name", "email", "status", "role", "createdAt"]
+    },
+    "Ticker": {
+      "title": "Ticker",
+      "description": "Global announcement ticker configuration",
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Announcement text to display in the marquee"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the ticker is visible or hidden"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last update"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "UID of the admin who updated the ticker"
+        }
+      },
+      "required": ["text", "enabled", "updatedAt", "updatedBy"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of all system users"
+    },
+    "/settings/{settingId}": {
+      "schema": "Ticker",
+      "description": "Global system configurations"
+    }
+  }
+}

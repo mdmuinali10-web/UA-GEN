@@ -1,0 +1,8 @@
+{
+  "name": "User Agent Generator",
+  "description": "Professional User-Agent generation engine for authentic browser identities, featuring custom browser profiles, operating system specifications, and bulk export tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

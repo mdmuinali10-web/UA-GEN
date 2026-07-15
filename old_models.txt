@@ -1,0 +1,117 @@
+
+// Dedicated device model pools
+export const DEVICE_MODELS: Record<string, string[]> = {
+  Pixel: [
+    'Pixel 9 Pro',
+    'Pixel 9',
+    'Pixel 8a',
+    'Pixel 8 Pro',
+    'Pixel 7 Pro',
+    'Pixel 7',
+    'Pixel Fold',
+    'Pixel 6a',
+    'Pixel 6 Pro'
+  ],
+  Samsung: [
+    'SM-S928B',
+    'SM-S921B',
+    'SM-S918B',
+    'SM-S908B',
+    'SM-A546B',
+    'SM-G998B',
+    'SM-A346B',
+    'SM-N986B'
+  ],
+  OnePlus: [
+    'OnePlus 12',
+    'OnePlus 11',
+    'OnePlus 10 Pro',
+    'OnePlus Nord 3',
+    'CPH2581',
+    'CPH2449',
+    'CPH2309',
+    'CPH2201'
+  ],
+  Nothing: [
+    'Nothing Phone (2)',
+    'Nothing Phone (1)',
+    'Nothing Phone (2a)',
+    'A065',
+    'A063',
+    'A142'
+  ],
+  Xiaomi: [
+    'Xiaomi 14',
+    'Xiaomi 13 Pro',
+    'Redmi Note 13 Pro',
+    'POCO F6',
+    '23127PN0CC',
+    '2210132G',
+    '23076RA4RG'
+  ],
+  Sony: [
+    'Xperia 1 VI',
+    'Xperia 5 V',
+    'Xperia 10 V',
+    'XQ-DQ72',
+    'XQ-CC72'
+  ]
+};
+
+export interface DeviceOSRange {
+  launch: number;
+  max: number;
+}
+
+export const DEVICE_OS_MAPPINGS: Record<string, DeviceOSRange> = {
+  // Google Pixel (7 years support for 8 and newer, 3-5 for older)
+  'Pixel 9 Pro': { launch: 14, max: 16 },
+  'Pixel 9': { launch: 14, max: 16 },
+  'Pixel 8a': { launch: 14, max: 16 },
+  'Pixel 8 Pro': { launch: 14, max: 16 },
+  'Pixel 7 Pro': { launch: 13, max: 16 },
+  'Pixel 7': { launch: 13, max: 16 },
+  'Pixel Fold': { launch: 13, max: 16 },
+  'Pixel 6a': { launch: 12, max: 15 },
+  'Pixel 6 Pro': { launch: 12, max: 15 },
+
+  // Samsung Galaxy (7 years support for S24, 4 years for other flagships/midrange, 3 years for older)
+  'SM-S928B': { launch: 14, max: 16 }, // Galaxy S24 Ultra
+  'SM-S921B': { launch: 14, max: 16 }, // Galaxy S24
+  'SM-S918B': { launch: 13, max: 16 }, // Galaxy S23 Ultra
+  'SM-S908B': { launch: 12, max: 16 }, // Galaxy S22 Ultra
+  'SM-A546B': { launch: 13, max: 16 }, // Galaxy A54 5G
+  'SM-G998B': { launch: 11, max: 15 }, // Galaxy S21 Ultra
+  'SM-A346B': { launch: 13, max: 16 }, // Galaxy A34 5G
+  'SM-N986B': { launch: 10, max: 13 }, // Galaxy Note 20 Ultra
+
+  // OnePlus (4 years support for flagship 11/12, 3 years for 10 Pro/Nord 3, 2 years for Nord 2)
+  'OnePlus 12': { launch: 14, max: 16 },
+  'OnePlus 11': { launch: 13, max: 16 },
+  'OnePlus 10 Pro': { launch: 12, max: 15 },
+  'OnePlus Nord 3': { launch: 13, max: 16 },
+  'CPH2581': { launch: 14, max: 16 }, // OnePlus 12R
+  'CPH2449': { launch: 13, max: 16 }, // OnePlus 11
+  'CPH2309': { launch: 12, max: 15 }, // OnePlus 10 Pro
+  'CPH2201': { launch: 11, max: 13 }, // OnePlus Nord 2
+
+  // Nothing Phone (3 years OS updates)
+  'Nothing Phone (2)': { launch: 13, max: 16 },
+  'Nothing Phone (1)': { launch: 12, max: 15 },
+  'Nothing Phone (2a)': { launch: 14, max: 16 },
+  'A065': { launch: 13, max: 16 }, // Nothing Phone (2)
+  'A063': { launch: 12, max: 15 }, // Nothing Phone (1)
+  'A142': { launch: 14, max: 16 }, // Nothing Phone (2a)
+
+  // Xiaomi (4 years for 14/Pro, 3 years for older)
+  'Xiaomi 14': { launch: 14, max: 16 },
+  'Xiaomi 13 Pro': { launch: 13, max: 16 },
+  'Redmi Note 13 Pro': { launch: 13, max: 16 },
+  'POCO F6': { launch: 14, max: 16 },
+  '23127PN0CC': { launch: 14, max: 16 }, // Xiaomi 14 Pro
+  '2210132G': { launch: 12, max: 15 },   // Xiaomi 12T Pro
+  '23076RA4RG': { launch: 13, max: 16 },  // Redmi Note 12S
+
+  // Sony Xperia (3 years for VI, 2 years for older)
+  'Xperia 1 VI': { launch: 14, max: 16 },
+  'Xperia 5 V': { launch: 13, max: 15 },
